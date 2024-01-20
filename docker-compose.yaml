@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+  mongo:
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    restart: always
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    env_file:
+      - "./backend/.env"
+    volumes:
+      - ./backend:/app
+      - ./backend/node_modules:/app/node_modules
+    depends_on:
+      - mongo
+    restart: always
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - "./frontend/.env"
+    volumes:
+      - ./frontend:/app
+      - ./frontend/node_modules:/app/node_modules
+    depends_on:
+      - backend
+    restart: always
+    stdin_open: true
+    tty: true
