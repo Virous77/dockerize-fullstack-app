@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-app-config
+data:
+  NEXT_PUBLIC_SERVER_URL: http://backend-app-service:4000
+  DEBUG: "true"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-app-config
+data:
+  MONGO_URI: mongodb://mongo-service:27017/dockerize-backend
+  PORT: "4000"
+  DEBUG: "true"
