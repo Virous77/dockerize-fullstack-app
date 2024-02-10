@@ -16,9 +16,13 @@ spec:
         - name: frontend-app
           image: full-frontend:latest
           imagePullPolicy: IfNotPresent
-          envFrom:
-            - configMapRef:
-                name: frontend-app-config
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
 
 ---
 apiVersion: apps/v1
@@ -42,7 +46,13 @@ spec:
           envFrom:
             - configMapRef:
                 name: backend-app-config
-
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -58,6 +68,47 @@ spec:
       labels:
         app: mongo
     spec:
+      volumes:
+        - name: mongo-persistent-storage
+          persistentVolumeClaim:
+            claimName: mongo-pvc
       containers:
         - name: mongo
           image: mongo
+          volumeMounts:
+            - mountPath: "/data/db"
+              name: mongo-persistent-storage
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: full-nginx
+          imagePullPolicy: IfNotPresent
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"

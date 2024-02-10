@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: frontend-app-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: frontend
   ports:
@@ -17,7 +17,7 @@ kind: Service
 metadata:
   name: backend-app-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: backend
   ports:
@@ -38,3 +38,17 @@ spec:
     - protocol: TCP
       port: 27017
       targetPort: 27017
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
